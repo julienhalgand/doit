@@ -1,7 +1,8 @@
 <template>
+<section>
+  <h1>{{list.title}}</h1>
   <section class="todoapp">
     <header class="header">
-      <h1>Todos</h1>
       <input type="text" class="new-todo" placeholder="Ajouter une tâche" v-model="newTodo" @keyup.enter="addTodo">
     </header>
     <div class="main">
@@ -26,29 +27,38 @@
           <li><a href="#" :class="{selected: filter === 'todo'}" @click.prevent="filter = 'todo'">À faire</a></li>
           <li><a href="#" :class="{selected: filter === 'done'}" @click.prevent="filter = 'done'">Faites</a></li>
         </ul>
-      <button class="clear-completed" v-show="doneTodo" @click.prevent="deleteCompleted">Supprimer les tâches terminées</button>
+      <button class="clear-completed" v-show="false" @click.prevent="deleteCompleted">Supprimer les tâches terminées</button>
     </footer>
+  </section>
   </section>
 </template>
 
 <script>
     import Vue from 'vue'
     export default {
-      data () {
+      data: function () {
         return {
-          todos: [{
-            name: 'Tache de test',
-            completed: false
-          }],
+          list: {
+            title: '',
+            tasks: []
+          },
           newTodo: '',
           filter: 'all',
           editing: null,
           holdTodo: ''
         }
       },
+      created: function () {
+        this.$http.get('http://localhost:4000/lists/' + this.$route.params.id).then(response => {
+          console.log(response.body)
+          this.list = response.body
+        }, response => {
+          // error callback
+        })
+      },
       methods: {
         addTodo () {
-          this.todos.push({
+          this.list.tasks.push({
             completed: false,
             name: this.newTodo
           })
@@ -66,10 +76,10 @@
           this.doneEdit()
         },
         deleteTodo (todo) {
-          this.todos = this.todos.filter(i => i !== todo)
+          this.list.tasks = this.list.tasks.filter(i => i !== todo)
         },
         deleteCompleted () {
-          this.todos = this.todos.filter(todo => !todo.completed)
+          this.list.tasks = this.list.tasks.filter(todo => !todo.completed)
         }
       },
       computed: {
@@ -78,23 +88,23 @@
             return this.remaining === 0
           },
           set (value) {
-            this.todos.forEach(todo => {
+            this.list.tasks.forEach(todo => {
               todo.completed = value
             })
           }
         },
-        remaining () { return this.todos.filter(todo => !todo.completed).length },
-        doneTodo () { return this.todos.filter(todo => todo.completed).length },
+        remaining () { return this.list.tasks.filter(todo => !todo.completed).length },
+        doneTodo () { return this.list.tasks.filter(todo => todo.completed).length },
         filteredTodos () {
           if (this.filter === 'todo') {
-            return this.todos.filter(todo => !todo.completed)
+            return this.list.tasks.filter(todo => !todo.completed)
           } else if (this.filter === 'done') {
-            return this.todos.filter(todo => todo.completed)
+            return this.list.tasks.filter(todo => todo.completed)
           }
-          return this.todos
+          return this.list.tasks
         },
         hasTodo () {
-          return this.todos.length
+          return this.list.tasks.length
         }
       },
       directives: {
@@ -108,7 +118,3 @@
       }
     }
 </script>
-
-<style src="./todos.css">
-
-</style>

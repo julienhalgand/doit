@@ -7,18 +7,16 @@ export default new Router({
   mode: 'history',
   routes: [{
     path: '/',
-    component: require('../components/Hello.vue'),
-    name: 'root'
-  }, {
-    path: '/a',
-    component: require('../components/PageA.vue'),
-    name: 'a'
-  }, {
-    path: '/article/:id(\\d+)',
     components: {
-      default: require('../components/PageC.vue'),
-      sidebar: require('../components/PageA.vue')
-    }
+      default: require('../components/Home.vue')
+    },
+    name: 'homepage'
+  }, {
+    path: '/task/:id',
+    components: {
+      default: require('../components/Todos.vue')
+    },
+    name: 'todos'
   }, {
     path: '*',
     redirect: '/'
