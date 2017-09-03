@@ -1,20 +1,21 @@
 <template>
 <section>
-  <h1>{{list.title}}</h1>
+  <input class="edit" type="text" v-model="list.title" @keyup.enter="doneEditList()"  @keyup.esc="cancelEditList" v-focus="list === editing" v-if="editing === list">
+  <h1 @dblclick="editList()" :class="{editing: list === editing}" v-else>{{list.title}}</h1>
   <section class="todoapp">
     <header class="header">
-      <input type="text" class="new-todo" placeholder="Ajouter une tâche" v-model="newTodo" @keyup.enter="addTodo">
+      <input type="text" class="new-todo" placeholder="Ajouter une tâche" v-model="newTask" @keyup.enter="addTodo">
     </header>
     <div class="main">
       <input class="toggle-all" type="checkbox" v-model="allDone">
       <ul class="todo-list">
         <li class="todo" v-for="todo in filteredTodos" :class="{completed: todo.completed, editing: todo === editing}">
-          <input class="toggle" type="checkbox" v-model="todo.completed">
+          <input class="toggle" type="checkbox" @click="completeTodo(todo)"  v-model="todo.completed"/>
           <div class="view">
-            <label @dblclick="editTodo(todo)">{{ todo.name }}</label>
+            <label @dblclick="editTodo(todo)">{{ todo.description }}</label>
             <button class="destroy" @click.prevent="deleteTodo(todo)"></button>
           </div>
-          <input class="edit" type="text" v-model="todo.name" @keyup.enter="doneEdit" @keyup.esc="cancelEdit" v-focus="todo === editing" @blur="doneEdit">
+          <input class="edit" type="text" v-model="todo.description" @keyup.enter="doneEdit(todo)" @keyup.esc="cancelEdit" v-focus="todo === editing" @blur="doneEdit">
         </li>
       </ul>
     </div>
@@ -35,6 +36,7 @@
 
 <script>
     import Vue from 'vue'
+    import config from '../config'
     export default {
       data: function () {
         return {
@@ -42,41 +44,59 @@
             title: '',
             tasks: []
           },
-          newTodo: '',
+          newTask: '',
           filter: 'all',
           editing: null,
           holdTodo: ''
         }
       },
       created: function () {
-        this.$http.get('http://localhost:4000/lists/' + this.$route.params.id).then(response => {
-          console.log(response.body)
+        this.$http.get(config.hostname + '/lists/' + this.$route.params.id + '?_embed=tasks').then(response => {
           this.list = response.body
-        }, response => {
-          // error callback
         })
       },
       methods: {
         addTodo () {
-          this.list.tasks.push({
-            completed: false,
-            name: this.newTodo
-          })
-          this.newTodo = ''
+          if (this.newTask.length > 0) {
+            this.$http.post(config.hostname + '/tasks', {description: this.newTask, listId: parseInt(this.$route.params.id), completed: false}).then(response => {
+              this.list.tasks.push(response.body)
+            })
+            this.newTask = ''
+          }
+        },
+        completeTodo (todo) {
+          this.$http.put(config.hostname + '/tasks/' + todo.id, todo)
         },
         editTodo (todo) {
           this.editing = todo
-          this.holdTodo = todo.name
+          this.holdTodo = todo.description
         },
-        doneEdit () {
+        editList () {
+          this.editing = this.list
+          this.holdTodo = this.list.title
+        },
+        doneEdit (todo) {
+          if (todo === this.editing) {
+            this.$http.put(config.hostname + '/tasks/' + todo.id, todo)
+          }
           this.editing = null
         },
         cancelEdit () {
-          this.editing.name = this.holdTodo
-          this.doneEdit()
+          this.editing.description = this.holdTodo
+          this.editing = null
+        },
+        doneEditList (todo) {
+          this.editing = null
+          this.$http.put(config.hostname + '/lists/' + this.list.id, {title: this.list.title})
+        },
+        cancelEditList () {
+          this.editing.title = this.holdTodo
+          this.editing = null
         },
         deleteTodo (todo) {
-          this.list.tasks = this.list.tasks.filter(i => i !== todo)
+          this.$http.delete(config.hostname + '/tasks/' + todo.id).then(response => {
+            this.list.tasks = this.list.tasks.filter(i => i !== todo)
+          })
         },
         deleteCompleted () {
           this.list.tasks = this.list.tasks.filter(todo => !todo.completed)

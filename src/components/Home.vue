@@ -7,26 +7,34 @@
         <li><a href="#">Rechercher</a></li>
       </ul>
   </footer>
+  <ul class="lists">
+    <li class="list" v-for="list in lists">
+      <router-link :to="{name: 'todos', params: {id: list.id}}">{{list.title}}</router-link>
+      </li>
+  </ul>
 </section>
 </template>
 
 <script>
+import config from '../config'
 export default {
   data: function () {
     return {
-      title: ''
+      title: '',
+      lists: []
     }
+  },
+  created: function () {
+    this.$http.get(config.hostname + '/lists').then(response => {
+      this.lists = response.body
+    })
   },
   methods: {
     addList () {
+      console.log(this.$router)
       if (this.title.length > 0) {
-          // POST /someUrl
-        this.$http.post('http://localhost:4000/lists', {list: {title: this.title}}).then(response => {
-          // get body data
+        this.$http.post(config.hostname + '/lists', {title: this.title}).then(response => {
           this.$router.push({name: 'todos', params: response.body})
-        },
-        response => {
-          // error callback
         })
         this.title = ''
       }
@@ -34,17 +42,3 @@ export default {
   }
 }
 </script>
-        /* var xhttp = new XMLHttpRequest()
-
-        xhttp.open('POST', 'http://localhost:4000/lists', true)
-        xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
-        xhttp.onreadystatechange = function (event) {
-          if (this.readyState === XMLHttpRequest.DONE) {
-            if (this.status === 200) {
-              console.log('Réponse reçu: %s', this.responseText)
-            } else {
-              console.log('Status de la réponse: %d (%s)', this.status, this.statusText)
-            }
-          }
-        }
-        xhttp.send('list[title]=' + this.title)*/

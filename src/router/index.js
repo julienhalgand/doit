@@ -12,7 +12,7 @@ export default new Router({
     },
     name: 'homepage'
   }, {
-    path: '/task/:id',
+    path: '/lists/:id',
     components: {
       default: require('../components/Todos.vue')
     },
