@@ -3,6 +3,17 @@
   <input class="edit" type="text" v-model="list.title" @keyup.enter="doneEditList()"  @keyup.esc="cancelEditList" v-focus="list === editing" v-if="editing === list">
   <h1 @dblclick="editList()" :class="{editing: list === editing}" v-else>{{list.title}}</h1>
   <section class="todoapp">
+    <footer class="footer" v-show="hasTodo">
+      <span class="todo-count">
+        <strong>{{ remaining }}</strong> tâches à faire
+      </span>
+        <ul class="filters">
+          <li><a href="#" :class="{selected: filter === 'all'}" @click.prevent="filter = 'all'">Toutes</a></li>
+          <li><a href="#" :class="{selected: filter === 'todo'}" @click.prevent="filter = 'todo'">À faire</a></li>
+          <li><a href="#" :class="{selected: filter === 'done'}" @click.prevent="filter = 'done'">Faites</a></li>
+        </ul>
+      <button class="clear-completed" v-show="false" @click.prevent="deleteCompleted">Supprimer les tâches terminées</button>
+    </footer>
     <header class="header">
       <input type="text" class="new-todo" placeholder="Ajouter une tâche" v-model="newTask" @keyup.enter="addTodo">
     </header>
@@ -31,6 +42,11 @@
       <button class="clear-completed" v-show="false" @click.prevent="deleteCompleted">Supprimer les tâches terminées</button>
     </footer>
   </section>
+  <div v-show="spinner" class="spinner">
+    <div class="bounce1"></div>
+    <div class="bounce2"></div>
+    <div class="bounce3"></div>
+  </div>
   </section>
 </template>
 
@@ -47,25 +63,27 @@
           newTask: '',
           filter: 'all',
           editing: null,
-          holdTodo: ''
+          holdTodo: '',
+          spinner: true
         }
       },
       created: function () {
-        this.$http.get(config.hostname + '/lists/' + this.$route.params.id + '?_embed=tasks').then(response => {
+        this.$http.get(config.hostname + '/api/lists/' + this.$route.params.id).then(response => {
+          this.spinner = false
           this.list = response.body
         })
       },
       methods: {
         addTodo () {
           if (this.newTask.length > 0) {
-            this.$http.post(config.hostname + '/tasks', {description: this.newTask, listId: parseInt(this.$route.params.id), completed: false}).then(response => {
+            this.$http.post(config.hostname + '/api/tasks', {description: this.newTask, listId: parseInt(this.$route.params.id), completed: false}).then(response => {
               this.list.tasks.push(response.body)
             })
             this.newTask = ''
           }
         },
         completeTodo (todo) {
-          this.$http.put(config.hostname + '/tasks/' + todo.id, todo)
+          this.$http.put(config.hostname + '/api/tasks/' + todo.id, todo)
         },
         editTodo (todo) {
           this.editing = todo
@@ -77,7 +95,7 @@
         },
         doneEdit (todo) {
           if (todo === this.editing) {
-            this.$http.put(config.hostname + '/tasks/' + todo.id, todo)
+            this.$http.put(config.hostname + '/api/tasks/' + todo.id, todo)
           }
           this.editing = null
         },
@@ -87,14 +105,14 @@
         },
         doneEditList (todo) {
           this.editing = null
-          this.$http.put(config.hostname + '/lists/' + this.list.id, {title: this.list.title})
+          this.$http.put(config.hostname + '/api/lists/' + this.list.id, {title: this.list.title})
         },
         cancelEditList () {
           this.editing.title = this.holdTodo
           this.editing = null
         },
         deleteTodo (todo) {
-          this.$http.delete(config.hostname + '/tasks/' + todo.id).then(response => {
+          this.$http.delete(config.hostname + '/api/tasks/' + todo.id).then(response => {
             this.list.tasks = this.list.tasks.filter(i => i !== todo)
           })
         },
@@ -110,6 +128,7 @@
           set (value) {
             this.list.tasks.forEach(todo => {
               todo.completed = value
+              this.$http.put(config.hostname + '/api/tasks/' + todo.id, todo)
             })
           }
         },

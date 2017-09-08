@@ -3,11 +3,17 @@
 import Vue from 'vue'
 import App from './App'
 import VueResource from 'vue-resource'
+import VuejsDialog from 'vuejs-dialog'
 import router from './router'
 
 Vue.config.productionTip = false
 Vue.use(VueResource)
-  /* eslint-disable no-new */
+Vue.use(VuejsDialog, {
+  okText: 'Supprimer',
+  cancelText: 'Annuler'
+})
+
+/* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,

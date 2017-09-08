@@ -3,20 +3,30 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
+const Home = () => import('../components/Home.vue')
+const Todos = () => import('../components/Todos.vue')
+const Archives = () => import('../components/Archives.vue')
+
 export default new Router({
   mode: 'history',
   routes: [{
     path: '/',
     components: {
-      default: require('../components/Home.vue')
+      default: Home
     },
     name: 'homepage'
   }, {
     path: '/lists/:id',
     components: {
-      default: require('../components/Todos.vue')
+      default: Todos
     },
     name: 'todos'
+  }, {
+    path: '/archives',
+    components: {
+      default: Archives
+    },
+    name: 'archives'
   }, {
     path: '*',
     redirect: '/'
