@@ -1,11 +1,15 @@
 <template>
 <section>
   <h1>Bienvenue</h1>
+    <select v-model="isPublic" class="ui fluid dropdown">
+      <option v-for="option in privacyArray" v-bind:value="option.value">
+        {{ option.text }}
+      </option>
+    </select>
   <input type="text" class="new-todo" placeholder="Saisir le titre d'une liste de tâche" v-model="title" @keyup.enter="addList">
   <footer class="footer">
       <ul class="filters">
-        <li><a href="#" @click="addList">Créer</a></li>
-        <li><a href="#">Rechercher</a></li>
+        <li><a href="#" @click.prevent="addList">Créer</a></li>
       </ul>
   </footer>
   <div v-show="spinner" class="spinner">
@@ -15,22 +19,41 @@
   </div>
   <ul class="lists todo-list">
     <li v-for="list in lists">
-      <router-link class="todoLink after" :to="{name: 'todos', params: {id: list.id}}">{{list.title}}</router-link>
-      <button class="destroy" @click.prevent="deleteList(list)" title="Supprimer"></button>
-      <button class="archived" @click.prevent="archiveList(list)" title="Archiver"><img width="40px" src="/static/images/archiver_icone.svg"></button>
+      <router-link class="todoLink after" :to="{name: 'todospublic', params: {id: list.url}}">{{list.title}}</router-link>
+      <i class="unhide icon see"></i>
     </li>
   </ul>
+ <div>
+   <button class="ui button" @click="previouspage()" :disabled="page < 2"><i class="angle left icon"></i></button>
+   <label class="ui label">{{page}}</label>
+   <button class="ui button" @click="nextpage()" :disabled="lists.length < 1"><i class="angle right icon"></i></button>
+ </div>
 </section>
 </template>
 
 <script>
+import listsMixin from '../mixins/listsMixin'
 import config from '../config'
 export default {
   data: function () {
     return {
-      title: '',
-      spinner: true,
-      lists: []
+      page: 1
+    }
+  },
+  methods: {
+    previouspage () {
+      this.page += -1
+      this.$http.get(config.hostname + '/api/lists/unarchived', {params: {page: this.page}}).then(response => {
+        this.spinner = false
+        this.lists = response.body
+      })
+    },
+    nextpage () {
+      this.page += 1
+      this.$http.get(config.hostname + '/api/lists/unarchived', {params: {page: this.page}}).then(response => {
+        this.spinner = false
+        this.lists = response.body
+      })
     }
   },
   created: function () {
@@ -39,27 +62,6 @@ export default {
       this.lists = response.body
     })
   },
-  methods: {
-    addList () {
-      if (this.title.length > 0) {
-        this.$http.post(config.hostname + '/api/lists', {title: this.title}).then(response => {
-          this.$router.push({name: 'todos', params: response.body})
-        })
-        this.title = ''
-      }
-    },
-    archiveList (list) {
-      this.$http.put(config.hostname + '/api/lists/' + list.id, {archived: true}).then(response => {
-        this.lists = this.lists.filter(i => i !== list)
-      })
-    },
-    deleteList (list) {
-      this.$dialog.confirm('Confirmez la suppression de "' + list.title + '" ?').then(() => {
-        this.$http.delete(config.hostname + '/api/lists/' + list.id).then(response => {
-          this.lists = this.lists.filter(i => i !== list)
-        })
-      })
-    }
-  }
+  mixins: [listsMixin]
 }
 </script>
