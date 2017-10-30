@@ -3,32 +3,6 @@
   <input class="edit" type="text" v-model="list.title" @keyup.enter="doneEditList()"  @keyup.esc="cancelEditList" v-focus="list === editing" v-if="editing === list">
   <h1 @dblclick="editList()" :class="{editing: list === editing}" v-else>{{list.title}}</h1>
   <form class="ui form">
-    <select v-model="list.isPublic" class="ui fluid dropdown" @change="editPrivacy()">
-      <option v-for="option in privacyArray" :value="option.value">
-        {{ option.text }}
-      </option>
-    </select>
-    <div class="field">
-      <label>Envoyé ce lien aux personnes avec qui vous souhaitez collaborer sur cette liste</label>
-    </div>
-    <div class="fields" v-for="sharinglink in list.SharingLinks">
-      <div class="eight wide field">
-        <input type="text" :value="hostname + '/lists/share/' + sharinglink.url" disabled>
-      </div>
-      <div class="eight wide field">
-        <button class="ui button green" @click.prevent
-          v-clipboard:copy="hostname + '/lists/share/' + sharinglink.url"
-          v-clipboard:success="onCopy"
-          v-clipboard:error="onError"><i class="copy icon"></i>Copier le lien</button>
-        <button class="ui button green" @click.prevent="renewSharingLink(sharinglink)" :class="{'loading': renewLoading}"><i class="repeat icon"></i>Demander un nouveau lien</button>
-      </div>
-    </div>
-    <div class="field" >
-      <ul class="lists todo-list" v-for="user in list.Users">
-        <li>{{user.firstname}} {{user.lastname}} <button class="destroy" @click.prevent="deleteUser(user)"></button></li>
-
-      </ul>
-    </div>
   </form>
   <section class="todoapp">
     <footer class="footer">
@@ -94,10 +68,6 @@
           Tasks: [],
           SharingLists: []
         },
-        privacyArray: [
-          {text: 'Public', value: true},
-          {text: 'Privé', value: false}
-        ],
         newTask: '',
         filter: 'todo',
         editing: null,
@@ -151,13 +121,8 @@
         this.editing = null
       },
       deleteTodo (todo) {
-        this.$http.delete(config.hostname + '/api/tasks/' + todo.id).then(response => {
+        this.$http.delete(config.hostname + '/api/tasks/' + todo.id, {listId: this.list.id}).then(response => {
           this.list.Tasks = this.list.Tasks.filter(i => i !== todo)
-        })
-      },
-      deleteUser (user) {
-        this.$http.patch(config.hostname + '/api/lists/collaborator/' + this.list.id, {userId: user.id}).then(response => {
-          this.list.Users = this.list.Users.filter(i => i !== user)
         })
       },
       deleteCompleted () {
@@ -182,7 +147,7 @@
         this.$store.dispatch('setFlashMessage', {text: 'Lien copier dans le presse papier avec succès !', status: 'success'})
       },
       onError: function (e) {
-        this.$store.dispatch('setFlashMessage', {text: 'Erreur lors de la copie dans le presse papier !', status: 'errors'})
+        this.$store.dispatch('setFlashMessage', {text: 'Erreur lors de la copie du texte dans le presse papier !', status: 'errors'})
       },
       onStart () {
         if (this.filter !== 'all') this.$store.dispatch('setFlashMessage', {text: 'Vous devez afficher toutes les tâches pour pouvoir les déplacer.', status: 'errors'})
@@ -230,7 +195,7 @@
       }
     },
     created: function () {
-      this.$http.get(config.hostname + '/api/lists/' + this.$route.params.id).then(response => {
+      this.$http.get(config.hostname + '/api/lists/shared/' + this.$route.params.id).then(response => {
         this.spinner = false
         if (response.body) {
           this.list = response.body
