@@ -1,6 +1,6 @@
 <template>
 <section>
-  <h1>Bienvenue</h1>
+  <h2>Bienvenue</h2>
     <select v-model="isPublic" class="ui fluid dropdown">
       <option v-for="option in privacyArray" v-bind:value="option.value">
         {{ option.text }}
@@ -23,10 +23,10 @@
       <i class="unhide icon see"></i>
     </li>
   </ul>
- <div>
-   <button class="ui button" @click="previouspage()" :disabled="page < 2"><i class="angle left icon"></i></button>
+ <div class="pagination">
+   <button class="ui button" @click="previouspage()" :disabled="page < 2 || spinner"><i class="angle left icon"></i></button>
    <label class="ui label">{{page}}</label>
-   <button class="ui button" @click="nextpage()" :disabled="lists.length < 1"><i class="angle right icon"></i></button>
+   <button class="ui button" @click="nextpage()" :disabled="lists.length < 1 || spinner"><i class="angle right icon"></i></button>
  </div>
 </section>
 </template>
@@ -42,18 +42,24 @@ export default {
   },
   methods: {
     previouspage () {
-      this.page += -1
-      this.$http.get(config.hostname + '/api/lists/unarchived', {params: {page: this.page}}).then(response => {
-        this.spinner = false
-        this.lists = response.body
-      })
+      if (!this.spinner) {
+        this.page += -1
+        this.spinner = true
+        this.$http.get(config.hostname + '/api/lists/unarchived', {params: {page: this.page}}).then(response => {
+          this.spinner = false
+          this.lists = response.body
+        })
+      }
     },
     nextpage () {
-      this.page += 1
-      this.$http.get(config.hostname + '/api/lists/unarchived', {params: {page: this.page}}).then(response => {
-        this.spinner = false
-        this.lists = response.body
-      })
+      if (!this.spinner) {
+        this.page += 1
+        this.spinner = true
+        this.$http.get(config.hostname + '/api/lists/unarchived', {params: {page: this.page}}).then(response => {
+          this.spinner = false
+          this.lists = response.body
+        })
+      }
     }
   },
   created: function () {

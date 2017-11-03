@@ -1,7 +1,7 @@
 <template>
   <div class="ui">
     <div class="column">
-    <h1>Profile</h1>
+    <h2>Profile</h2>
     <ul>
       <li>{{user.firstname}}</li>
       <li>{{user.lastname}}</li>
@@ -9,7 +9,7 @@
     </ul>
     </div>
   <section>
-  <h1>Vos listes de tâches</h1>
+  <h2>Vos listes de tâches</h2>
   <input type="text" class="new-todo" placeholder="Saisir le titre d'une liste de tâche" v-model="title" @keyup.enter="addList">
   <footer class="footer">
       <ul class="filters">

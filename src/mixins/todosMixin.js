@@ -3,6 +3,10 @@ import config from '../config'
 export default {
   data: function () {
     return {
+      list: {
+        title: '',
+        Tasks: []
+      },
       spinner: true
     }
   },

@@ -5,7 +5,6 @@ Vue.use(Router)
 
 const Home = () => import('../components/Home.vue')
 const Todos = () => import('../components/Todos.vue')
-const Archives = () => import('../components/Archives.vue')
 
 export default new Router({
   mode: 'history',
@@ -39,12 +38,6 @@ export default new Router({
       default: require('../components/Todosshare.vue')
     },
     name: 'todosshare'
-  }, {
-    path: '/archives',
-    components: {
-      default: Archives
-    },
-    name: 'archives'
   }, {
     path: '/signin',
     components: {
@@ -83,6 +76,8 @@ export default new Router({
     name: 'cgu'
   }, {
     path: '*',
-    redirect: '/'
+    components: {
+      default: require('../components/errors/404.vue')
+    }
   }]
 })
