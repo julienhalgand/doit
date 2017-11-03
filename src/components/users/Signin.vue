@@ -55,6 +55,9 @@
               this.$store.dispatch('setFlashMessage', {text: 'Bonjour !', status: 'success', persist: true})
               this.$router.push({name: 'profile'})
             })
+          } else if (response.body.errors) {
+            this.formSend = false
+            this.$store.dispatch('setFlashMessage', {text: response.body.errors, status: 'errors'})
           }
         }).catch(errors => {
           if (errors.status === 400) {

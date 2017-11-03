@@ -1,4 +1,5 @@
 export default {
-  hostname: 'http://' + window.location.hostname + ':4000',
-  website: 'http://' + window.location.hostname + ':8080'
+  hostname: 'http://localhost:4000',
+  // hostname: 'http://api.mywebideas.net',
+  website: 'http://doit.mywebideas.net'
 }

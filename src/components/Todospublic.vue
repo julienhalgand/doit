@@ -1,6 +1,6 @@
 <template>
 <section>
-  <h1>{{list.title}}</h1>
+  <h2>{{list.title}}</h2>
   <section class="todoapp">
     <footer class="footer">
       <span class="todo-count">
@@ -49,10 +49,20 @@
   import todos from '../mixins/todosMixin'
   import config from '../config'
   export default {
+    data: function () {
+      return {
+        list: {
+          title: '',
+          isPublic: true,
+          Tasks: [],
+          SharingLists: []
+        },
+        filter: 'todo'
+      }
+    },
     created: function () {
       this.$http.get(config.hostname + '/api/lists/public/' + this.$route.params.id).then(response => {
         this.spinner = false
-        console.log(response)
         if (response.body) {
           this.list = response.body
           if (typeof this.list.Tasks === 'undefined') this.list.Tasks = []
@@ -60,6 +70,21 @@
       }).catch((errors) => {
         console.log(errors)
       })
+    },
+    computed: {
+      remaining () { return this.list.Tasks.filter(todo => !todo.completed).length },
+      doneTodo () { return this.list.Tasks.filter(todo => todo.completed).length },
+      filteredTodos () {
+        if (this.filter === 'todo') {
+          return this.list.Tasks.filter(todo => !todo.completed)
+        } else if (this.filter === 'done') {
+          return this.list.Tasks.filter(todo => todo.completed)
+        }
+        return this.list.Tasks
+      },
+      hasTodo () {
+        return this.list.Tasks.length
+      }
     },
     mixins: [todos]
   }

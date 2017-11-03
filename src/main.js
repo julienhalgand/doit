@@ -24,9 +24,11 @@ Vue.http.interceptors.push(function (request, next) {
       }
     }
     if (response.status === 404) {
+      store.dispatch('setFlashMessage', {text: 'Cette page n\'existe pas ou plus ! Vous avez donc été redirigé sur la page d\'accueil.', status: 'errors', persist: true})
       router.push({name: 'homepage'})
     }
     if (response.status === 403) {
+      store.dispatch('setFlashMessage', {text: 'Vous n\'avez pas le droit d\'accèder au contenu de cette page ! Vous avez donc été redirigé sur la page d\'accueil.', status: 'errors', persist: true})
       router.push({name: 'homepage'})
     }
   })
