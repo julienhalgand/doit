@@ -19,7 +19,7 @@
       <input class="toggle-all" type="checkbox" @click.prevent>
       <ul class="todo-list">
         <li class="todo" v-for="todo in filteredTodos" :class="{completed: todo.completed}">
-          <input class="toggle" type="checkbox" @click.prevent :checked="todo.completed"/>
+          <input class="toggle" type="checkbox" @click="completed(todo)" :checked="todo.completed"/>
           <div class="view">
             <label>{{ todo.description }}</label>
           </div>
@@ -70,6 +70,12 @@
       }).catch((errors) => {
         console.log(errors)
       })
+    },
+    methods: {
+      completed (todo) {
+        if (todo.completed) todo.completed = false
+        else todo.completed = true
+      }
     },
     computed: {
       remaining () { return this.list.Tasks.filter(todo => !todo.completed).length },

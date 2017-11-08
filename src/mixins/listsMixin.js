@@ -5,7 +5,7 @@ export default {
       title: '',
       isPublic: true,
       privacyArray: [
-        {text: 'Public', value: true},
+        {text: 'Publique', value: true},
         {text: 'Privé', value: false}
       ],
       spinner: true,

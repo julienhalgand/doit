@@ -88,7 +88,6 @@
       },
       completeTodo (todo) {
         this.$http.put(config.hostname + '/api/tasks/' + todo.id, todo).then((response) => {
-          console.log(response)
         })
       },
       editTodo (todo) {

@@ -9,7 +9,7 @@
     </ul>
     </div>
   <section>
-  <h2>Vos listes de tâches</h2>
+  <h3>Créer une nouvelle liste</h3>
   <div class="ui grid">
     <div class="twelve wide column">
       <input type="text" class="new-todo" placeholder="Saisir le titre d'une liste de tâche" v-model="title" @keyup.enter="addList">
@@ -28,6 +28,8 @@
         <li><a href="#" @click="addList">Créer</a></li>
       </ul>
   </footer>
+  <h3>Vos listes</h3>
+
   <div v-show="spinner" class="spinner">
     <div class="bounce1"></div>
     <div class="bounce2"></div>

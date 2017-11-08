@@ -13,9 +13,9 @@ export default {
       if (this.filter === 'todo') {
         return this.lists.filter(list => !list.archived)
       } else if (this.filter === 'public') {
-        return this.lists.filter(list => list.public)
-      } else if (this.filter === 'private') {
         return this.lists.filter(list => !list.public)
+      } else if (this.filter === 'private') {
+        return this.lists.filter(list => list.public)
       } else if (this.filter === 'archived') {
         return this.lists.filter(list => list.archived)
       } else if (this.filter === 'collaborations') {

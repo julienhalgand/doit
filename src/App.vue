@@ -5,6 +5,7 @@
       <a href="#" class="logo item" @click.prevent="previousPage"><img class="logo" src="/static/images/previous.svg" alt="Page précédente" title="Page précédente"></a>
       <a href="#" class="logo item" @click.prevent="nextPage"><img class="logo" src="/static/images/next.svg" alt="Page suivante" title="Page suivante"></a>
       <div class="right menu">
+      <router-link :to="{name: 'tutorial'}" exact active-class="active" class="item"><i class="student icon"></i>Tutoriels</router-link>
       <template v-if="isLoggedIn">
       <router-link :to="{name: 'profile'}" exact active-class="active" class="item"><i class="user icon"></i>Profile</router-link>
       <a href="#" @click.prevent="signout" class="item"><i class="sign out icon"></i>Déconnexion</a>
