@@ -34,7 +34,7 @@
         </draggable>
       </ul>
     </div>
-    <footer class="footer">
+    <footer class="lastfooter footer">
       <span class="todo-count">
         <strong>{{ remaining }}</strong> tâches à faire
       </span>
@@ -51,7 +51,7 @@
     <div class="bounce2"></div>
     <div class="bounce3"></div>
   </div>
-  </section>
+</section>
 </template>
 <script>
   import Vue from 'vue'

@@ -27,7 +27,7 @@
         </li>
       </ul>
     </div>
-    <footer class="footer">
+    <footer class="lastfooter footer">
       <span class="todo-count">
         <strong>{{ remaining }}</strong> tâches à faire
       </span>

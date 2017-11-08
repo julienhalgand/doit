@@ -15,6 +15,12 @@ export default new Router({
     },
     name: 'homepage'
   }, {
+    path: '/tutorial',
+    components: {
+      default: require('../components/Tutorial.vue')
+    },
+    name: 'tutorial'
+  }, {
     path: '/lists/:id',
     components: {
       default: Todos

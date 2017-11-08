@@ -1,5 +1,6 @@
 export default {
+  /* hostname: 'https://api.mywebideas.net',
+  website: 'https://doit.mywebideas.net' */
   hostname: 'http://localhost:4000',
-  // hostname: 'http://api.mywebideas.net',
-  website: 'http://doit.mywebideas.net'
+  website: 'https://localhost:8080'
 }

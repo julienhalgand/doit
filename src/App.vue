@@ -1,17 +1,19 @@
 <template>
   <div id="app">
-    <div class="ui massive pointing attached stackable menu container">
-      <router-link :to="{name: 'homepage'}" exact active-class="active" class="item"><img class="logo" src="/static/images/maison.svg" alt="Logo" title="Retour à la page d'accueil"><p>ACCUEIL</p></router-link>
-      <a href="#" class="logo item" @click.prevent="previousPage"><img class="logo" src="/static/images/previous.svg" alt="Page précédente" title="Page précédente">PRÉCÉDENT</a>
-      <a href="#" class="logo item" @click.prevent="nextPage">SUIVANT<img class="logo" src="/static/images/next.svg" alt="Page suivante" title="Page suivante"></a>
+    <div class="ui huge pointing menu stackable container">
+      <router-link :to="{name: 'homepage'}" exact active-class="active" class="item"><img class="logo" src="/static/images/logo2.svg" alt="Logo" title="Retour à la page d'accueil"></router-link>
+      <a href="#" class="logo item" @click.prevent="previousPage"><img class="logo" src="/static/images/previous.svg" alt="Page précédente" title="Page précédente"></a>
+      <a href="#" class="logo item" @click.prevent="nextPage"><img class="logo" src="/static/images/next.svg" alt="Page suivante" title="Page suivante"></a>
+      <div class="right menu">
       <template v-if="isLoggedIn">
-      <router-link :to="{name: 'profile'}" exact active-class="active" class="item"><img class="logo" src="/static/images/profil.svg" alt="Profil" title="Profil">PROFILE</router-link>
-      <a href="#" @click.prevent="signout" class="item"><img class="logo" src="/static/images/signout.svg" alt="Déconnexion" title="Se déconnecter">DÉCONNEXION</a>
+      <router-link :to="{name: 'profile'}" exact active-class="active" class="item"><i class="user icon"></i>Profile</router-link>
+      <a href="#" @click.prevent="signout" class="item"><i class="sign out icon"></i>Déconnexion</a>
       </template>
       <template v-else>
-        <router-link :to="{name: 'signup'}" exact active-class="active" class="item"><img class="logo" src="/static/images/profil.svg" alt="Inscription" title="Créer un compte">INSCRIPTION</router-link>
-        <router-link :to="{name: 'signin'}" exact active-class="active" class="item"><img class="logo" src="/static/images/signin.svg" alt="Connexion" title="Se connecter">CONNEXION</router-link>
+        <router-link :to="{name: 'signup'}" exact active-class="active" class="item"><i class="id card outline icon"></i>Inscription</router-link>
+        <router-link :to="{name: 'signin'}" exact active-class="active" class="item"><i class="sign in icon"></i>Connexion</router-link>
       </template>
+      </div>
     </div>
     <div class="ui message" :class="{'icon': isFormSend, 'negative': getFlashMessageStatus === 'errors', 'positive': getFlashMessageStatus === 'success'}" v-if="isFlashMessage">
       <i class="notched circle loading icon" v-if="isFormSend"></i>
@@ -82,3 +84,12 @@
     }
   }
 </script>
+
+<style>
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s, transform .5s;
+  }
+  .fade-enter, .fade-leave-active {
+    opacity: 0;
+  }
+</style>

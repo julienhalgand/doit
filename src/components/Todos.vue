@@ -1,13 +1,21 @@
 <template>
 <section>
-  <input class="edit" type="text" v-model="list.title" @keyup.enter="doneEditList()"  @keyup.esc="cancelEditList" v-focus="list === editing" v-if="editing === list">
-  <h2 @dblclick="editList()" :class="{editing: list === editing}" v-else>{{list.title}}</h2>
-  <form class="ui form">
-    <select v-model="list.isPublic" class="ui fluid dropdown" @change="editPrivacy()">
+  <div class="ui grid">
+
+    <div class="twelve wide column">
+      <input class="edit" type="text" v-model="list.title" @keyup.enter="doneEditList()"  @keyup.esc="cancelEditList" v-focus="list === editing" v-if="editing === list">
+      <h2 @dblclick="editList()" class="auie" :class="{editing: list === editing}" v-else>{{list.title}}</h2>
+    </div>
+    <div class="four wide column">
+      <select v-model="list.isPublic" class="ui fluid dropdown" @change="editPrivacy()">
       <option v-for="option in privacyArray" :value="option.value">
         {{ option.text }}
       </option>
-    </select>
+      </select>
+    </div>
+  </div>
+  <form class="ui form">
+
     <div class="field">
       <label>Envoyé ce lien aux personnes avec qui vous souhaitez collaborer sur cette liste</label>
     </div>
@@ -60,7 +68,7 @@
         </draggable>
       </ul>
     </div>
-    <footer class="footer">
+    <footer class="lastfooter footer">
       <span class="todo-count">
         <strong>{{ remaining }}</strong> tâches à faire
       </span>

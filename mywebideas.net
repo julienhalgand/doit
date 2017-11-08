@@ -1,0 +1,56 @@
+server {
+        listen       80;
+        server_name  mywebideas mywebideas.net;
+        root /var/www/html/MWI;
+        index index.php index.html index.htm index.nginx-debian.html;
+	expires +24h;
+	add_header Cache-Control private;
+	gzip  on;
+	gzip_http_version 1.1;
+	gzip_vary on;
+	gzip_comp_level 6;
+	gzip_proxied any;
+	gzip_types text/plain text/css application/json application/javascript application/x-javascript text/javascript text/xml application/xml application/rss+xml application/atom+xml application/rdf+xml;
+	gzip_buffers 16 8k;
+	
+	gzip_disable “MSIE [1-6].(?!.*SV1)”;
+	location / {
+                try_files $uri $uri/ =404;
+        }
+ 	location /legalnotices {
+                try_files $uri /legal.html;
+        }
+        error_page 404 /404.html;
+        error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+                root /var/www/html;
+        }
+        location ~ \.php$ {
+                try_files $uri =404;
+                fastcgi_pass unix:/var/run/php5-fpm.sock;
+                fastcgi_index index.php;
+                fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+                include fastcgi_params;
+	}
+location ~* \.(js|css|svg|png|jpg|jpeg|gif|ico)$ {
+                expires 14d;
+        }
+
+    listen 443 ssl; # managed by Certbot
+ssl_certificate /etc/letsencrypt/live/mywebideas.net-0001/fullchain.pem; # managed by Certbot
+ssl_certificate_key /etc/letsencrypt/live/mywebideas.net-0001/privkey.pem; # managed by Certbot
+ssl_session_cache shared:le_nginx_SSL:1m; # managed by Certbot
+ssl_session_timeout 1440m; # managed by Certbot
+
+ssl_protocols TLSv1 TLSv1.1 TLSv1.2; # managed by Certbot
+ssl_prefer_server_ciphers on; # managed by Certbot
+
+ssl_ciphers "ECDHE-ECDSA-AES128-GCM-SHA256 ECDHE-ECDSA-AES256-GCM-SHA384 ECDHE-ECDSA-AES128-SHA ECDHE-ECDSA-AES256-SHA ECDHE-ECDSA-AES128-SHA256 ECDHE-ECDSA-AES256-SHA384 ECDHE-RSA-AES128-GCM-SHA256 ECDHE-RSA-AES256-GCM-SHA384 ECDHE-RSA-AES128-SHA ECDHE-RSA-AES128-SHA256 ECDHE-RSA-AES256-SHA384 DHE-RSA-AES128-GCM-SHA256 DHE-RSA-AES256-GCM-SHA384 DHE-RSA-AES128-SHA DHE-RSA-AES256-SHA DHE-RSA-AES128-SHA256 DHE-RSA-AES256-SHA256 EDH-RSA-DES-CBC3-SHA"; # managed by Certbot
+
+
+
+    if ($scheme != "https") {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+}

@@ -1,12 +1,24 @@
 <template>
 <section>
   <h2>Bienvenue</h2>
+  <div class="ui piled segment pagination">
+    <h4>Organisez vous grâce à DOIT</h4>
+    <p>Créer des listes de tâches en quelques clics. C'est facile et gratuit.</p>
+    <p><router-link :to="{name: 'tutorial'}" class="ui button pink">J'y vais</router-link></p>
+  </div>
+  <div class="ui grid">
+    <div class="twelve wide column">
+      <input type="text" class="new-todo" placeholder="Saisir le titre d'une liste de tâche" v-model="title" @keyup.enter="addList">
+    </div>
+    <div class="four wide column">
+    </br>
     <select v-model="isPublic" class="ui fluid dropdown">
       <option v-for="option in privacyArray" v-bind:value="option.value">
         {{ option.text }}
       </option>
     </select>
-  <input type="text" class="new-todo" placeholder="Saisir le titre d'une liste de tâche" v-model="title" @keyup.enter="addList">
+    </div>
+  </div>
   <footer class="footer">
       <ul class="filters">
         <li><a href="#" @click.prevent="addList">Créer</a></li>

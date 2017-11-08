@@ -3,14 +3,26 @@
     <div class="column">
     <h2>Profile</h2>
     <ul>
-      <li>{{user.firstname}}</li>
-      <li>{{user.lastname}}</li>
-      <li>{{user.createdAt}}</li>
+      <li>Prénom: {{user.firstname}}</li>
+      <li>Nom: {{user.lastname}}</li>
+      <li>Date d'inscription: {{user.createdAt}}</li>
     </ul>
     </div>
   <section>
   <h2>Vos listes de tâches</h2>
-  <input type="text" class="new-todo" placeholder="Saisir le titre d'une liste de tâche" v-model="title" @keyup.enter="addList">
+  <div class="ui grid">
+    <div class="twelve wide column">
+      <input type="text" class="new-todo" placeholder="Saisir le titre d'une liste de tâche" v-model="title" @keyup.enter="addList">
+    </div>
+    <div class="four wide column">
+    </br>
+    <select v-model="isPublic" class="ui fluid dropdown">
+      <option v-for="option in privacyArray" v-bind:value="option.value">
+        {{ option.text }}
+      </option>
+    </select>
+    </div>
+  </div>
   <footer class="footer">
       <ul class="filters">
         <li><a href="#" @click="addList">Créer</a></li>
